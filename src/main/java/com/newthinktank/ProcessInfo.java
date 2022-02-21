@@ -3,8 +3,8 @@ package com.newthinktank;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -65,10 +65,16 @@ public class ProcessInfo extends HttpServlet {
 			String user = "dbadmin";
 			String pw = "turtledove";
 			con = DriverManager.getConnection(url, user, pw);
-			Statement s = con.createStatement();
-			String query = "INSERT INTO CUSTOMER " + "(first_name, last_name, phone, cust_id) " + "VALUES ('" + fName
-					+ "', '" + lName + "', '" + phone + "', NULL)";
-			s.executeUpdate(query);
+
+			String query = "INSERT INTO CUSTOMER " + "(first_name, last_name, phone, cust_id) "
+					+ "VALUES (?, ?, ?, NULL)";
+			PreparedStatement p = con.prepareStatement(query);
+			p.setString(1, fName);
+			p.setString(2, lName);
+			p.setString(3, phone);
+
+			p.executeUpdate();
+
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
