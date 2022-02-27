@@ -57,26 +57,28 @@ public class ProcessInfo extends HttpServlet {
 	}
 
 	protected void updateDB(String fName, String lName, String phone) {
-		Connection con;
 
+		// Register Driver
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			String url = "jdbc:mysql://localhost:3306/test1?useSSL=false&serverTimezone=UTC";
-			String user = "dbadmin";
-			String pw = "turtledove";
-			con = DriverManager.getConnection(url, user, pw);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 
-			String query = "INSERT INTO CUSTOMER " + "(first_name, last_name, phone, cust_id) "
-					+ "VALUES (?, ?, ?, NULL)";
-			PreparedStatement p = con.prepareStatement(query);
+		String query = "INSERT INTO CUSTOMER " + "(first_name, last_name, phone, cust_id) " + "VALUES (?, ?, ?, NULL)";
+		String url = "jdbc:mysql://localhost:3306/test1?useSSL=false&serverTimezone=UTC";
+		String user = "dbadmin";
+		String pw = "turtledove";
+
+		try (Connection con = DriverManager.getConnection(url, user, pw);
+				PreparedStatement p = con.prepareStatement(query);) {
+
 			p.setString(1, fName);
 			p.setString(2, lName);
 			p.setString(3, phone);
 
 			p.executeUpdate();
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
